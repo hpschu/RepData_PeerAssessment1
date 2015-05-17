@@ -1,23 +1,19 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-```{r, echo=FALSE, message=FALSE}
-require(ggplot2)
-set.seed(1234)
-Sys.setlocale("LC_TIME", "en_US.UTF-8")
+# Reproducible Research: Peer Assessment 1
+
+```
+## [1] "en_US.UTF-8"
 ```
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 dat <- as.data.frame(read.csv(unz("activity.zip", "activity.csv")))
 ```
 
 
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 total <- vector()
 dates <- levels(dat$date)
 for (i in 1:length(dates)){
@@ -28,23 +24,24 @@ ggplot(data = data.frame(date = dates, total_steps = total), aes(date, total_ste
   geom_bar(stat='identity') +
   theme(axis.text.x=element_text(angle=60, hjust = 1, size = 7)) +
   xlab(label = 'Date') + ylab('Total steps')
+```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 # res <- vector()
 # for (i in 1:length(dates)){
 #   res <- c(res, mean(unlist(subset(dat, date == levels(date)[i])$steps), na.rm = T))
 # }
 ```
 
-```{r, echo=FALSE}
-mean = round(mean(total, na.rm=T), 2)
-median = median(total, na.rm = T)
-```
-Mean of the total amount of steps per day: `r mean` and median: `r median`.
+
+Mean of the total amount of steps per day: 9354.23 and median: 10395.
 
 
 ## What is the average daily activity pattern?
-```{r}
 
+```r
 levs <- unique(dat$interval)
 resmat <- matrix(rep(0, 2*length(levs)), ncol = 2)
 colnames(resmat) <- c('interval', 'mean_steps')
@@ -62,13 +59,16 @@ qplot(as.numeric(interval), mean_steps, data = resmat, geom = 'line', xlab = 'In
                        c(0, 500, maxint, seq(1000, 2000, 500)))
 ```
 
-The interval with maximum average of steps is `r maxint` with an average of `r max(resmat$mean_steps)` steps.
+![](./PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
+The interval with maximum average of steps is 835 with an average of 206.1698113 steps.
 
 
 ## Imputing missing values
 The pattern used here is to sample randomly from all the other days' same intervals for the imputed value.
 
-```{r}
+
+```r
 missing_ind <- which(is.na(dat$steps))
 for (i in 1:length(missing_ind)){
   steps <- as.vector(na.omit(subset(dat, dat$interval == dat[missing_ind[i],]$interval)$steps))
@@ -89,18 +89,17 @@ ggplot(data = data.frame(date = dates, total_steps = total), aes(date, total_ste
   xlab(label = 'Date') + ylab('Total steps')
 ```
 
-```{r, echo=FALSE}
-options(scipen=999)
-mean2 = round(mean(total), 2)
-median2 = median(total)
-```
+![](./PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
 
-Introducing imputed values had an impact to the data. The mean with the imputed data is `r mean2` and median `r median2`. The mean rose by `r mean2 - mean` and median by `r median2 - median`.
+
+
+Introducing imputed values had an impact to the data. The mean with the imputed data is 10835.7 and median 10765. The mean rose by 1481.47 and median by 370.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r}
+
+```r
 dat <- transform(dat, date = as.Date(date))
 
 day <- weekdays(dat$date)
@@ -140,5 +139,7 @@ ggplot(res, aes(interval, avg_steps)) + geom_line() + facet_grid(facets = . ~ ti
   labs(x = '5-minute interval') + 
   labs(y = 'Average steps')
 ```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
 
 Some differences can be seen from the plot between weekdays and weekends. There is a slight increase during the intervals from approximately 1200 to 1750.
