@@ -136,7 +136,7 @@ colnames(weekend) <- c('time_of_week', 'avg_steps', 'interval')
 res <- as.data.frame(rbind(weekday, weekend))
 
 ggplot(res, aes(interval, avg_steps)) + geom_line() + facet_grid(facets = . ~ time_of_week, ) + 
-  labs(title = 'Mean activity during weeksdays and weekends') +
+  labs(title = 'Mean activity during weekdays and weekends') +
   labs(x = '5-minute interval') + 
   labs(y = 'Average steps')
 ```
